@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         bottomNavigationBar: BottomNavigationBar(items: const [
           BottomNavigationBarItem(
               label: "Sleep", icon: Icon(Icons.mode_night_outlined)),
-          BottomNavigationBarItem(label: "Lang", icon: Icon(Icons.abc)),
+          BottomNavigationBarItem(label: "Lang", icon: Icon(Icons.abc_sharp)),
           BottomNavigationBarItem(label: "Settings", icon: Icon(Icons.settings))
         ]),
       ),
