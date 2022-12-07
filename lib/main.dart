@@ -1,60 +1,250 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-void main() {
-  runApp(const SignIn());
-}
+void main() => runApp(const MyApp());
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  Widget build(BuildContext context) {
+    return CupertinoApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SignInPage(),
+        '/signup': (context) => SignUpPage(),
+        '/home': (context) => const HomePage()
+      },
+    );
+  }
 }
 
-class _SignInState extends State<SignIn> {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final _formKey = GlobalKey<FormState>();
+  late String _email;
+  late String _password;
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: CupertinoColors.darkBackgroundGray,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CupertinoTextFormFieldRow(
+                placeholder: 'Email',
+                onChanged: (value) {
+                  setState(() {
+                    _email = value;
+                  });
+                },
+                keyboardType: TextInputType.emailAddress,
+                placeholderStyle: const TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                ),
+                style: const TextStyle(
+                  color: CupertinoColors.white,
+                ),
+                cursorColor: CupertinoColors.white,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: CupertinoColors.white,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (!RegExp(
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(value!)) {
+                    return 'Please enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              CupertinoTextFormFieldRow(
+                placeholder: 'Password',
+                onChanged: (value) {
+                  setState(() {
+                    _password = value;
+                  });
+                },
+                obscureText: true,
+                placeholderStyle: const TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                ),
+                style: const TextStyle(
+                  color: CupertinoColors.white,
+                ),
+                cursorColor: CupertinoColors.white,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: CupertinoColors.white,
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value!.length < 8) {
+                    return 'Password must be at least 8 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              _isLoading
+                  ? const CupertinoActivityIndicator(
+                      animating: true,
+                      radius: 20.0,
+                      color: Color.fromARGB(255, 156, 156, 156),
+                    )
+                  : CupertinoButton.filled(
+                      child: const Text('Sign In'),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          // Sign in with email and password
+                          Navigator.pushNamed(context, '/home');
+                        }
+                      },
+                    ),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to the SignUpScreen when the button is pressed
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: const Text('Sign Up'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SignUpPage extends StatefulWidget {
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
+  late String _email, _password;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+      backgroundColor: CupertinoColors.darkBackgroundGray,
       appBar: AppBar(
-        title: Text("LangAlarmv1"),
+        title: const Text('Sign Up'),
       ),
-      body: Builder(
-          builder: (context) => Center(
-                  child: Column(
-                children: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              const MyApp(data: "Signed in")));
-                    },
-                    child: const Text('Sign In'),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            CupertinoTextFormFieldRow(
+              placeholder: 'Email',
+              onChanged: (value) {
+                setState(() {
+                  _email = value;
+                });
+              },
+              keyboardType: TextInputType.emailAddress,
+              placeholderStyle: const TextStyle(
+                color: CupertinoColors.inactiveGray,
+              ),
+              style: const TextStyle(
+                color: CupertinoColors.white,
+              ),
+              cursorColor: CupertinoColors.white,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: CupertinoColors.white,
                   ),
-                ],
-              ))),
+                ),
+              ),
+              validator: (value) {
+                if (!RegExp(
+                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(value!)) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
+            CupertinoTextFormFieldRow(
+              placeholder: 'Password',
+              onChanged: (value) {
+                setState(() {
+                  _password = value;
+                });
+              },
+              obscureText: true,
+              placeholderStyle: const TextStyle(
+                color: CupertinoColors.inactiveGray,
+              ),
+              style: const TextStyle(
+                color: CupertinoColors.white,
+              ),
+              cursorColor: CupertinoColors.white,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: CupertinoColors.white,
+                  ),
+                ),
+              ),
+              validator: (value) {
+                if (value!.length < 8) {
+                  return 'Password must be at least 8 characters';
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  // route to next page
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Sign Up'),
+            ),
+          ],
+        ),
+      ),
     ));
   }
 }
 
-class MyApp extends StatelessWidget {
-  final String data;
-  const MyApp({
-    super.key,
-    required this.data,
-  });
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text(data),
+          title: const Text("Hi"),
         ),
+        // body: const AlarmHomePage(),
         bottomNavigationBar: BottomNavigationBar(items: const [
           BottomNavigationBarItem(
               label: "Sleep", icon: Icon(Icons.mode_night_outlined)),
