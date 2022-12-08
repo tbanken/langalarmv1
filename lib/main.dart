@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// import 'db.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongdart;
 
 void main() => runApp(const MyApp());
 
@@ -218,10 +220,14 @@ class _SignUpPageState extends State<SignUpPage> {
               },
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  // route to next page
+                  var db = mongdart.Db("mongodb://localhost:27017/users");
+                  await db.open();
+                  var collection = db.collection("users");
+                  collection
+                      .insertOne({"email": _email, 'password': _password});
                   Navigator.pop(context);
                 }
               },
